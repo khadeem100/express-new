@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "442211160041",
+    "project_id": "express-88b10",
+    "storage_bucket": "express-88b10.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:442211160041:android:95b511cf69f52c18284578",
+        "android_client_info": {
+          "package_name": "nl.tynktech.express"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjG9NvIBLHJivpLFXdTD3SzGEMwbWYM8Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
