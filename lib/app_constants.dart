@@ -3,6 +3,17 @@ import 'presentation/app_assets.dart';
 abstract class AppConstants {
   AppConstants._();
 
+  static const String _defaultBaseUrl = 'https://api.tynk-tech.nl/';
+  static const String _defaultWebUrl = 'https://express.tynk-tech.nl/';
+  static const String _defaultAdminUrl = 'https://admin.tynk-tech.nl/';
+  static const String _defaultDeepLinkHost = 'express.tynk-tech.nl';
+  static const String _defaultGoogleMapsApiKey =
+    'AIzaSyAo0EDk5sxDGBm7IXHDyEnNLVHIQtwsaRk';
+  static const String _defaultFirebaseWebKey =
+    'AIzaSyCjG9NvIBLHJivpLFXdTD3SzGEMwbWYM8Y';
+  static const String _defaultRoutingBaseUrl =
+    'https://api.openrouteservice.org/';
+
   static const bool isDemo = false;
   static const bool autoTrn = true;
   static const bool shopBadge = true;
@@ -12,28 +23,59 @@ abstract class AppConstants {
   static const int cacheSize = 1920;
 
   /// api urls
-  static const String baseUrl = String.fromEnvironment('BASE_URL');
-  static const String webUrl = String.fromEnvironment('WEB_URL');
-  static const String adminPageUrl = String.fromEnvironment('ADMIN_URL');
-  static const String wsBaseUrl = String.fromEnvironment('WS_BASE_URL');
-  static const String wsSecret = String.fromEnvironment('WS_SECRET');
+  static const String baseUrl = String.fromEnvironment(
+    'BASE_URL',
+    defaultValue: _defaultBaseUrl,
+  );
+  static const String webUrl = String.fromEnvironment(
+    'WEB_URL',
+    defaultValue: _defaultWebUrl,
+  );
+  static const String adminPageUrl = String.fromEnvironment(
+    'ADMIN_URL',
+    defaultValue: _defaultAdminUrl,
+  );
+  static const String wsBaseUrl = String.fromEnvironment(
+    'WS_BASE_URL',
+    defaultValue: '',
+  );
+  static const String wsSecret = String.fromEnvironment(
+    'WS_SECRET',
+    defaultValue: '',
+  );
   static const String googleApiKey = String.fromEnvironment(
     'GOOGLE_MAPS_API_KEY',
+    defaultValue: _defaultGoogleMapsApiKey,
   );
   static const String firebaseWebKey = String.fromEnvironment(
     'FIREBASE_API_KEY',
+    defaultValue: _defaultFirebaseWebKey,
   );
-  static const String routingBaseUrl = String.fromEnvironment('ROUTING_API');
-  static const String routingKey = String.fromEnvironment('ROUTING_KEY');
-  static const String deepLinkHost = String.fromEnvironment('DEEP_LINK_URL');
+  static const String routingBaseUrl = String.fromEnvironment(
+    'ROUTING_API',
+    defaultValue: _defaultRoutingBaseUrl,
+  );
+  static const String routingKey = String.fromEnvironment(
+    'ROUTING_KEY',
+    defaultValue: 'Routing_Key',
+  );
+  static const String deepLinkHost = String.fromEnvironment(
+    'DEEP_LINK_URL',
+    defaultValue: _defaultDeepLinkHost,
+  );
 
   // PayFast
-  static const String passphrase = String.fromEnvironment('PAYFAST_PASSPHRASE');
+  static const String passphrase = String.fromEnvironment(
+    'PAYFAST_PASSPHRASE',
+    defaultValue: 'PASSPHRASE',
+  );
   static const String merchantId = String.fromEnvironment(
     'PAYFAST_MERCHANT_ID',
+    defaultValue: 'MERCHANT_ID',
   );
   static const String merchantKey = String.fromEnvironment(
     'PAYFAST_MERCHANT_KEY',
+    defaultValue: 'MERCHANT_KEY',
   );
 
   /// auth phone fields

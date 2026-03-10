@@ -40,6 +40,11 @@ if (project.hasProperty('dart-defines')) {
             }
 }
 
+def dartDefineOrDefault(String key, String fallback) {
+    def value = dartDefines[key]
+    return value != null && value.toString().trim() ? value : fallback
+}
+
 
 android {
     namespace "nl.tynktech.express"
@@ -65,11 +70,11 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        resValue "string", "google_maps_api_key", dartDefines.GOOGLE_MAPS_API_KEY
-        resValue "string", "facebook_app_id", dartDefines.FACEBOOK_APP_ID
-        resValue "string", "facebook_client_token", dartDefines.FACEBOOK_CLIENT_TOKEN
-        resValue "string", "deep_link_host", dartDefines.DEEP_LINK_URL
-        resValue "string", "app_name", dartDefines.APP_NAME
+        resValue "string", "google_maps_api_key", dartDefineOrDefault('GOOGLE_MAPS_API_KEY', 'AIzaSyAo0EDk5sxDGBm7IXHDyEnNLVHIQtwsaRk')
+        resValue "string", "facebook_app_id", dartDefineOrDefault('FACEBOOK_APP_ID', 'APP_ID')
+        resValue "string", "facebook_client_token", dartDefineOrDefault('FACEBOOK_CLIENT_TOKEN', 'CLIENT_TOKEN')
+        resValue "string", "deep_link_host", dartDefineOrDefault('DEEP_LINK_URL', 'express.tynk-tech.nl')
+        resValue "string", "app_name", dartDefineOrDefault('APP_NAME', 'Express')
     }
 
     signingConfigs {
