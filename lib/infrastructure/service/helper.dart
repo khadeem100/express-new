@@ -125,34 +125,57 @@ abstract class AppHelpers {
     if (message.contains("DioException")) {
       return;
     }
-    FToast.toast(
-      context,
-      toast: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: EdgeInsets.all(16.r),
-            margin: EdgeInsets.only(
-              bottom: MediaQuery.sizeOf(context).height / 1.5,
-              left: 32.r,
-              right: 32.r,
-            ),
-            decoration: BoxDecoration(
-              color: CustomStyle.primary,
-              borderRadius: BorderRadius.circular(8.r),
-            ),
-            child: Text(
-              message,
-              style: CustomStyle.interNormal(
-                color: CustomStyle.white,
-                size: 14,
+    try {
+      if (!context.mounted) {
+        return;
+      }
+
+      final navigatorContext =
+          Navigator.maybeOf(context, rootNavigator: true)?.context ?? context;
+      final mediaQuery = MediaQuery.maybeOf(navigatorContext);
+      final toastBottomMargin = (mediaQuery?.size.height ?? 600) / 1.5;
+
+      FToast.toast(
+        navigatorContext,
+        toast: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.all(16.r),
+              margin: EdgeInsets.only(
+                bottom: toastBottomMargin,
+                left: 32.r,
+                right: 32.r,
+              ),
+              decoration: BoxDecoration(
+                color: CustomStyle.primary,
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+              child: Text(
+                message,
+                style: CustomStyle.interNormal(
+                  color: CustomStyle.white,
+                  size: 14,
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    } catch (_) {
+      final messenger =
+          ScaffoldMessenger.maybeOf(context) ??
+          ScaffoldMessenger.maybeOf(
+            Navigator.maybeOf(context, rootNavigator: true)?.context ?? context,
+          );
+      messenger?.showSnackBar(
+        SnackBar(
+          content: Text(message),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 
   static int searchIndex(List<int> ids, int target) {

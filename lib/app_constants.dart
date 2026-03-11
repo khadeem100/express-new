@@ -18,8 +18,9 @@ abstract class AppConstants {
   static const bool autoTrn = true;
   static const bool shopBadge = true;
   static const bool enableGame = true;
+  static const bool enableGoogleSignIn = false;
 
-  static const bool isPhoneFirebase = true;
+  static const bool isPhoneFirebase = false;
   static const int cacheSize = 1920;
 
   /// api urls

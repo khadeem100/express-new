@@ -38,6 +38,20 @@ class _LoginScreenState extends State<LoginScreen>
   late TabController _tabController;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
+  List<IconData> get _socialButtons {
+    final buttons = List<IconData>.from(
+      Platform.isAndroid
+          ? ListConstants.socialSignInAndroid
+          : ListConstants.socialSignIn,
+    );
+
+    if (!AppConstants.enableGoogleSignIn) {
+      buttons.remove(FlutterRemix.google_fill);
+    }
+
+    return buttons;
+  }
+
   @override
   void initState() {
     _passwordController = TextEditingController();
@@ -114,10 +128,7 @@ class _LoginScreenState extends State<LoginScreen>
                         16.verticalSpace,
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children:
-                              (Platform.isAndroid
-                                      ? ListConstants.socialSignInAndroid
-                                      : ListConstants.socialSignIn)
+                          children: _socialButtons
                                   .map(
                                     (e) => SocialButton(
                                       iconColor: widget.colors.textBlack,

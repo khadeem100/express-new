@@ -174,17 +174,27 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
       if (event.service == null) return;
       List<ServiceModel> list = List.from(state.selectServices);
       if (event.extra != null) {
-        List<ServiceExtra> extras = List.from(state.selectExtras);
+        int index = list
+            .map((e) => e.id)
+            .toList()
+            .indexOf(event.service?.id ?? 0);
+
+        List<ServiceExtra> extras = index >= 0
+            ? List<ServiceExtra>.from(list[index].selectExtras ?? [])
+            : <ServiceExtra>[];
+
         if (extras.any((e) => e.id == event.extra?.id)) {
           extras.removeWhere((e) => e.id == event.extra?.id);
         } else {
           extras.add(event.extra!);
         }
-        int index = list
-            .map((e) => e.id)
-            .toList()
-            .indexOf(event.service?.id ?? 0);
-        list[index] = list[index].copyWith(selectExtras: extras);
+
+        if (index >= 0) {
+          list[index] = list[index].copyWith(selectExtras: extras);
+        } else {
+          list.add(event.service!.copyWith(selectExtras: extras));
+        }
+
         emit(state.copyWith(selectServices: list, selectExtras: extras));
         return;
       }

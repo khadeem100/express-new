@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
+import 'package:demand/app_constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -27,20 +28,35 @@ abstract class FirebaseService {
   }
 
   static Future<Either<UserCredential, dynamic>> socialGoogle() async {
+    if (!AppConstants.enableGoogleSignIn) {
+      return right('Google sign-in is not configured for this app yet.');
+    }
+
     final GoogleSignIn googleSignIn = GoogleSignIn();
 
-    googleSignIn.disconnect();
+    try {
+      await googleSignIn.signOut();
+    } catch (_) {}
 
     try {
       final GoogleSignInAccount? googleSignInAccount = await googleSignIn
           .signIn();
 
-      final GoogleSignInAuthentication? googleSignInAuthentication =
-          await googleSignInAccount?.authentication;
+      if (googleSignInAccount == null) {
+        return right('Google sign-in was cancelled.');
+      }
+
+      final GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount.authentication;
+
+      if ((googleSignInAuthentication.idToken?.isEmpty ?? true) &&
+          (googleSignInAuthentication.accessToken?.isEmpty ?? true)) {
+        return right('Google sign-in is not configured for this app yet.');
+      }
 
       final AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleSignInAuthentication?.accessToken,
-        idToken: googleSignInAuthentication?.idToken,
+        accessToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken,
       );
 
       final userCredential = await FirebaseAuth.instance.signInWithCredential(

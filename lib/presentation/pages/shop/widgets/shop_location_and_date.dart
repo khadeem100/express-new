@@ -6,6 +6,7 @@ import 'package:flutter_remix/flutter_remix.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:demand/infrastructure/service/services.dart';
 import 'package:demand/presentation/components/components.dart';
+import 'package:demand/presentation/components/store_location_map.dart';
 import 'package:demand/presentation/style/style.dart';
 import 'package:demand/presentation/style/theme/theme.dart';
 import 'package:intl/intl.dart';
@@ -87,12 +88,18 @@ class ShopLocationAndDate extends StatelessWidget {
                 ],
               ),
               20.verticalSpace,
-              CustomNetworkImage(
-                url:
-                    "https://maps.googleapis.com/maps/api/staticmap?center=${shop?.location?.latitude ?? AppHelpers.getInitialLatitude()},${shop?.location?.longitude ?? AppHelpers.getInitialLongitude()}&zoom=10&size=400x400&markers=color:black|label:${(shop?.ratingAvg ?? 0).toStringAsFixed(0)}|${shop?.location?.latitude ?? ""},${shop?.location?.longitude ?? ""}&key=${AppHelpers.getMapKey()}",
-                height: 390,
-                width: double.infinity,
+              StoreLocationMap(
+                latitude:
+                    shop?.location?.latitude ?? AppHelpers.getInitialLatitude(),
+                longitude:
+                    shop?.location?.longitude ??
+                    AppHelpers.getInitialLongitude(),
+                title:
+                    shop?.translation?.title ??
+                    shop?.translation?.address ??
+                    AppHelpers.getAppName(),
                 borderRadius: BorderRadius.circular(10.r),
+                height: 390,
               ),
               24.verticalSpace,
               if (shop?.workingDays?.isNotEmpty ?? false)
