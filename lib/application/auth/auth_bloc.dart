@@ -383,6 +383,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> forgotPassword(ForgotPassword event, emit) async {
     emit(state.copyWith(isLoading: true));
     if (!AppValidators.isEmail(event.phone)) {
+      // Phone forgot-password flow
       if (!AppConstants.isPhoneFirebase) {
         final res = await authRepository.forgotPassword(phone: event.phone);
         res.fold(
@@ -422,24 +423,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           },
         );
       }
+    } else {
+      // Email forgot-password flow
+      final res = await authRepository.forgotPassword(phone: event.phone);
+      res.fold(
+        (l) async {
+          emit(
+            state.copyWith(
+              isLoading: false,
+              isReset: true,
+              screenType: AuthType.confirm,
+            ),
+          );
+          event.onSuccess?.call();
+        },
+        (r) {
+          emit(state.copyWith(isLoading: false));
+          AppHelpers.errorSnackBar(event.context, message: r);
+        },
+      );
     }
-    final res = await authRepository.forgotPassword(phone: event.phone);
-    res.fold(
-      (l) async {
-        emit(
-          state.copyWith(
-            isLoading: false,
-            isReset: true,
-            screenType: AuthType.confirm,
-          ),
-        );
-        event.onSuccess?.call();
-      },
-      (r) {
-        emit(state.copyWith(isLoading: false));
-        AppHelpers.errorSnackBar(event.context, message: r);
-      },
-    );
   }
 
   Future<void> forgotPasswordConfirm(ForgotPasswordConfirm event, emit) async {
@@ -469,7 +472,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Future<void> forgotPasswordAfter(ForgotPasswordAfter event, emit) async {
     emit(state.copyWith(isLoading: true));
-    if (!AppHelpers.checkPhone(event.phone)) {
+    // For email or non-Firebase phone, user is already authenticated
+    // after OTP verification, so use authenticated updatePassword endpoint
+    if (!AppHelpers.checkPhone(event.phone) || !AppConstants.isPhoneFirebase) {
       final res = await userRepository.updatePassword(
         password: event.password,
         passwordConfirmation: event.password,
@@ -485,6 +490,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(state.copyWith(isLoading: false));
       return;
     }
+    // Firebase phone path
     final res = await authRepository.forgotPasswordAfter(
       phone: event.phone,
       password: event.password,
